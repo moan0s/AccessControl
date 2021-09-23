@@ -22,9 +22,22 @@ void loop()
     return;
   }
 
-   // Select one of the cards
+  // Select one of the cards
   if ( ! mfrc522.PICC_ReadCardSerial()) {
     return;
   }
+  String content = "";
+  byte letter;
+  for (byte i = 0; i < mfrc522.uid.size; i++)
+  {
+    content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+    content.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  content.toUpperCase();
+  String cardnumber = content.substring(1);
+  cardnumber.replace(" ", "");  //Remove spaces
+  int cardnumberINT = cardnumber.toInt();
+  Serial.println(cardnumber);
+  Serial.println(cardnumberINT, HEX);
 
 }
