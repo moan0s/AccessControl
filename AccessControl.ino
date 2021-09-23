@@ -36,8 +36,6 @@ void loop()
   content.toUpperCase();
   String cardnumber = content.substring(1);
   cardnumber.replace(" ", "");  //Remove spaces
-  int cardnumberINT = cardnumber.toInt();
   Serial.println(cardnumber);
-  Serial.println(cardnumberINT, HEX);
 
 }
