@@ -5,6 +5,15 @@
 #define RST_PIN         22         // Change to your configuration
 #define SS_PIN          21         // Change to your configuration
 
+#define LOCKER_PIN      2         //2: Built-In LED
+#define GREEN_PIN       13
+#define RED_PIN         12
+#define BUZZER_PIN      14
+
+#define LOCKER_TIME     5000      //In ms
+#define BUZZER_TIME     5000      //In ms
+#define BLINK_TIME      1000      //In ms
+
 char* ssid     = "DEMO-WIFI";      // Change to your configuration
 char* password = "16x7<Z82";       // Change to your configuration
 
@@ -53,7 +62,12 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 WiFiClientSecure client;
 
 void setup() {
-  Serial.begin(9600);   // Initialize serial communications with the PC
+  pinMode(LOCKER_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  Serial.begin(115200);   // Initialize serial communications with the PC
   SPI.begin();          // Init SPI bus
   mfrc522.PCD_Init();   // Init MFRC522
   mfrc522.PCD_DumpVersionToSerial();  // Show details of PCD - MFRC522 Card Reader details
@@ -97,6 +111,7 @@ void loop()
     cardnumber.replace(" ", "");  //Remove spaces
     Serial.println(cardnumber);
 
+    digitalWrite(RED_PIN, HIGH);
     Serial.println("\nStarting connection to server...");
     if (!client.connect(server, 443))
       Serial.println("Connection failed!");
@@ -109,18 +124,20 @@ void loop()
       client.println("Host:" + String(server));
       client.println("Connection: close");
       client.println();
+      digitalWrite(RED_PIN, LOW);
 
       String responseCode = "";
-      
+
       int abc = 0;
       while (client.connected()) {
         if (client.available()) {
           String response = client.readStringUntil('\n');
+          Serial.println(response); //DEBUG option
           abc++;
-          if(responseCode == ""){
+          if (responseCode == "") {
             //responseCode = response.substring(9,12);  // In the first line of response is the http response Code (character 9 - 12)
-            if(abc == 25){                              // In line 25 is the responsecode (workaround in ILMO)     
-              responseCode = response.substring(0,3);
+            if (abc == 25) {                            // In line 25 is the responsecode (workaround in ILMO)
+              responseCode = response.substring(0, 3);
             }
           }
         }
@@ -129,14 +146,32 @@ void loop()
       Serial.println(responseCode);
       client.stop();
 
-      if(responseCode == "200"){
-        //Open Door
-        //Green light
+      if (responseCode == "200") {    //Access
+        Serial.println("Access");
+        digitalWrite(GREEN_PIN, HIGH);
+        digitalWrite(LOCKER_PIN, HIGH);
+        delay(LOCKER_TIME);
+        digitalWrite(LOCKER_PIN, LOW);
+        digitalWrite(GREEN_PIN, LOW);
       }
-      else if(responseCode == "401"){
-        //Red light
-        //Buzzer
+      else if (responseCode == "401") { //No access
+        Serial.println("No Access");
+
+        digitalWrite(BUZZER_PIN, HIGH);
+        for (int i = 0; i <= round(BUZZER_TIME / (BLINK_TIME * 2)); i++) {
+          digitalWrite(RED_PIN, HIGH);
+          delay(BLINK_TIME);
+          digitalWrite(RED_PIN, LOW);
+          delay(BLINK_TIME);
+        }
+        digitalWrite(BUZZER_PIN, LOW);
+      }
+      else { //Error, try again
+        digitalWrite(RED_PIN, HIGH);
+          delay(BUZZER_TIME);
+          digitalWrite(RED_PIN, LOW);
       }
     }
+    
   }
 }
