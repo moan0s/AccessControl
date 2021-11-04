@@ -5,7 +5,7 @@
 #define RST_PIN         22         // Change to your configuration
 #define SS_PIN          21         // Change to your configuration
 
-#define LOCKER_PIN      2         //2: Built-In LED
+#define LOCKER_PIN      5         //2: Built-In LED
 #define GREEN_PIN       13
 #define RED_PIN         12
 #define BUZZER_PIN      14
