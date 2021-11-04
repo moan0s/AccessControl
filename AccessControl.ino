@@ -126,22 +126,7 @@ void loop()
       client.println();
       digitalWrite(RED_PIN, LOW);
 
-      String responseCode = "";
-
-      int abc = 0;
-      while (client.connected()) {
-        if (client.available()) {
-          String response = client.readStringUntil('\n');
-          Serial.println(response); //DEBUG option
-          abc++;
-          if (responseCode == "") {
-            //responseCode = response.substring(9,12);  // In the first line of response is the http response Code (character 9 - 12)
-            if (abc == 25) {                            // In line 25 is the responsecode (workaround in ILMO)
-              responseCode = response.substring(0, 3);
-            }
-          }
-        }
-      }
+      String responseCode = getResponseCode();
       Serial.print("Response Code: ");
       Serial.println(responseCode);
       client.stop();
@@ -156,7 +141,6 @@ void loop()
       }
       else if (responseCode == "401") { //No access
         Serial.println("No Access");
-
         digitalWrite(BUZZER_PIN, HIGH);
         for (int i = 0; i <= round(BUZZER_TIME / (BLINK_TIME * 2)); i++) {
           digitalWrite(RED_PIN, HIGH);
@@ -168,10 +152,29 @@ void loop()
       }
       else { //Error, try again
         digitalWrite(RED_PIN, HIGH);
-          delay(BUZZER_TIME);
-          digitalWrite(RED_PIN, LOW);
+        delay(BUZZER_TIME);
+        digitalWrite(RED_PIN, LOW);
       }
     }
-    
   }
+}
+
+String getResponseCode() {
+  String responseCode = "";
+  int abc = 0;
+  while (client.connected()) {
+    if (client.available()) {
+      String response = client.readStringUntil('\n');
+      abc++;
+      if (responseCode == "") {
+        if (abc >= 23 && abc <= 25) {
+          responseCode = response.substring(0, 3);
+          if (responseCode.toInt() != 0) { //If response code is a number
+             return responseCode;          //Valid number found
+          }
+        }
+      }
+    }
+  }
+  return "0"; // No valid number found
 }
