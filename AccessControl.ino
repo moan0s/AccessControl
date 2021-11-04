@@ -166,15 +166,13 @@ String getResponseCode() {
     if (client.available()) {
       String response = client.readStringUntil('\n');
       abc++;
-      if (responseCode == "") {
-        if (abc >= 23 && abc <= 25) {
+        if (abc >= 20 && abc <= 30) {
           responseCode = response.substring(0, 3);
           if (responseCode.toInt() != 0) { //If response code is a number
              return responseCode;          //Valid number found
           }
         }
       }
-    }
   }
   return "0"; // No valid number found
 }
