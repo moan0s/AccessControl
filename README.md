@@ -9,3 +9,4 @@ Bill of materials:
 * Electromagnetic Lock Drawer (e.g. https://www.amazon.de/gp/product/B08G58WZDQ/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1)
 * Key tresor (e.g. https://eshop.wuerth.de/Haengeschrank-zur-Schluesselaufbewahrung-SHSLSHRNK-METALL-22-SCHLUESSEL/0824010080.sku/de/DE/EUR/?CampaignName=SR001&VisibleSearchTerm=schl%C3%BCsselschrank)
 * Some small electronic components (see Circuit diagram)
+* M4 Screws, washers and nuts
