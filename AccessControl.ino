@@ -5,12 +5,12 @@
 #define RST_PIN         22         // Change to your configuration
 #define SS_PIN          21         // Change to your configuration
 
-#define LOCKER_PIN      5         //2: Built-In LED
-#define GREEN_PIN       13
-#define RED_PIN         12
-#define BUZZER_PIN      14
+#define LOCKER_PIN      13         //2: Built-In LED
+#define GREEN_PIN       2
+#define RED_PIN         15
+#define BUZZER_PIN      34
 
-#define LOCKER_TIME     5000      //In ms
+#define LOCKER_TIME     2000      //In ms
 #define BUZZER_TIME     5000      //In ms
 #define BLINK_TIME      1000      //In ms
 
@@ -68,11 +68,12 @@ void setup() {
   pinMode(BUZZER_PIN, OUTPUT);
 
   Serial.begin(115200);   // Initialize serial communications with the PC
-  SPI.begin();          // Init SPI bus
-  mfrc522.PCD_Init();   // Init MFRC522
+  SPI.begin();            // Init SPI bus
+  mfrc522.PCD_Init();     // Init MFRC522
   mfrc522.PCD_DumpVersionToSerial();  // Show details of PCD - MFRC522 Card Reader details
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
+  digitalWrite(RED_PIN, HIGH);
   while (WiFi.status() != WL_CONNECTED) {
     //WiFi.begin(ssid, password);
     delay(1000);
@@ -81,6 +82,7 @@ void setup() {
 
   Serial.print("Connected to ");
   Serial.println(ssid);
+  digitalWrite(RED_PIN, LOW);
 
   client.setCACert(root_ca);
 }
@@ -112,6 +114,7 @@ void loop()
     Serial.println(cardnumber);
 
     digitalWrite(RED_PIN, HIGH);
+    digitalWrite(GREEN_PIN, HIGH);
     Serial.println("\nStarting connection to server...");
     if (!client.connect(server, 443))
       Serial.println("Connection failed!");
@@ -125,6 +128,7 @@ void loop()
       client.println("Connection: close");
       client.println();
       digitalWrite(RED_PIN, LOW);
+      digitalWrite(GREEN_PIN, LOW);
 
       String responseCode = getResponseCode();
       Serial.print("Response Code: ");
