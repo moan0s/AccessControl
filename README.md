@@ -1,5 +1,9 @@
 # AccessControl
 To control asual key box with an ESP over the cloud in the fablab of my university. As a server ILMO (https://github.com/moan0s/ILMO) is used.
+For the usage of the key tresor from wuerth it is neccesarry to modify it a bit. You have to remove the nose and replace it by the electromagnetic lock drawer. Also the locker pin at the door has to be replaced by the printed version.
+
+The printed box covers the whole electronic stuff and also two LEDs and the RFID modul.
+
 The circuit is made with fritzing. (https://fritzing.org/)
 The 3d parts are made with Solid Works Student.
 
