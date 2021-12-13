@@ -20,7 +20,9 @@ char* password = "16x7<Z82";       // Change to your configuration
 const char* server = "www.fs-medtech.de";
 char* path = "/bib_test/";  //Slash is necessary
 
-String accessKeyValue = "123456";
+const char* room_id = "";
+
+String token = "123456";
 
 
 //www.fs-medtech.de
@@ -121,9 +123,10 @@ void loop()
     else {
       Serial.println("Connected to server!");
       // Make a HTTP request:
-      String httpRequestData = "index.php/?ac=check_access&access_key=" + accessKeyValue + "&UID=" + cardnumber;
+      String httpRequestData = "library/api/uid/"+ cardnumber + "/room/" + room_id;
       Serial.println("https://" + String(server) + String(path) + httpRequestData);
       client.println("GET https://" + String(server) + String(path) + httpRequestData + " HTTP/1.1");
+      client.println("Authorization: Token "+token);
       client.println("Host:" + String(server));
       client.println("Connection: close");
       client.println();
